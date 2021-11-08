@@ -1,0 +1,293 @@
+<abp-page [title]="'::Attachments' | abpLocalization">
+  <abp-page-toolbar-container class="col">
+    <div class="text-lg-right pt-2">
+      <button
+        *abpPermission="'Demo.Attachments.Create'"
+        class="btn btn-primary btn-sm"
+        type="button"
+        (click)="create()"
+      >
+        <i class="fa fa-plus mr-1" aria-hidden="true"></i>
+        {{ '::NewAttachment' | abpLocalization }}
+      </button>
+    </div>
+    <div>
+      <!-- <app-attachment-control AttachmentName='Books'></app-attachment-control> -->
+
+    </div>
+  </abp-page-toolbar-container>
+
+  <p>
+    <a
+      href="javascript:;"
+      (click)="isFiltersHidden = !isFiltersHidden"
+      [attr.aria-expanded]="!isFiltersHidden"
+      aria-controls="advanced-content-filters"
+    >
+      {{ '::SeeAdvancedFilters' | abpLocalization }}
+      <i [ngbCollapse]="!isFiltersHidden" class="fa fa-angle-down ml-1" aria-hidden="true"></i>
+      <i [ngbCollapse]="isFiltersHidden" class="fa fa-angle-up ml-1" aria-hidden="true"></i>
+    </a>
+  </p>
+
+  <div id="advanced-content-filters" [ngbCollapse]="isFiltersHidden">
+    <div class="card mb-4">
+      <div class="card-body">
+        <form #filterForm (keyup.enter)="list.get()">
+          <div class="row">
+            <div class="col-12 col-sm-auto">
+              <div class="form-group">
+                <label for="minFilesCount">
+                  {{ '::MinFilesCount' | abpLocalization }}
+                </label>
+
+                <input
+                  id="minFilesCount"
+                  type="number"
+                  class="form-control"
+                  [(ngModel)]="filters.filesCountMin"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+              </div>
+            </div>
+
+            <div class="col-12 col-sm-auto">
+              <div class="form-group">
+                <label for="maxFilesCount">
+                  {{ '::MaxFilesCount' | abpLocalization }}
+                </label>
+
+                <input
+                  id="maxFilesCount"
+                  type="number"
+                  class="form-control"
+                  [(ngModel)]="filters.filesCountMax"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+              </div>
+            </div>
+            <div class="col-12 col-sm-auto">
+              <div class="form-group">
+                <label for="minFilesSize">
+                  {{ '::MinFilesSize' | abpLocalization }}
+                </label>
+
+                <input
+                  id="minFilesSize"
+                  type="number"
+                  class="form-control"
+                  [(ngModel)]="filters.filesSizeMin"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+              </div>
+            </div>
+
+            <div class="col-12 col-sm-auto">
+              <div class="form-group">
+                <label for="maxFilesSize">
+                  {{ '::MaxFilesSize' | abpLocalization }}
+                </label>
+
+                <input
+                  id="maxFilesSize"
+                  type="number"
+                  class="form-control"
+                  [(ngModel)]="filters.filesSizeMax"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+              </div>
+            </div>
+            <div class="col-12 col-sm-auto">
+              <div class="form-group">
+                <label for="nameFilter">
+                  {{ '::Name' | abpLocalization }}
+                </label>
+
+                <input
+                  id="nameFilter"
+                  class="form-control"
+                  [(ngModel)]="filters.name"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+              </div>
+            </div>
+
+            <div class="col-12 col-sm-auto align-self-end mb-3">
+              <div class="row">
+                <div class="col-6 col-sm-auto">
+                  <button
+                    type="button"
+                    class="btn btn-outline-primary btn-block"
+                    (click)="clearFilters()"
+                  >
+                    <span>{{ 'AbpUi::Clear' | abpLocalization }}</span>
+                  </button>
+                </div>
+                <div class="col-6 col-sm-auto">
+                  <button type="button" class="btn btn-primary btn-block" (click)="list.get()">
+                    <span>{{ 'AbpUi::Refresh' | abpLocalization }}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="data-tables-filter">
+        <div class="input-group">
+          <input
+            type="search"
+            class="form-control"
+            [placeholder]="'AbpUi::PagerSearch' | abpLocalization"
+            [(ngModel)]="list.filter"
+          />
+          <div class="input-group-append">
+            <button
+              [title]="'AbpUi::Search' | abpLocalization"
+              (click)="list.get()"
+              class="btn btn-sm btn-primary"
+            >
+              <i class="fas fa-search" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <ngx-datatable [rows]="data.items" [count]="data.totalCount" [list]="list" default>
+        <ngx-datatable-column
+          [name]="'AbpUi::Actions' | abpLocalization"
+          [maxWidth]="150"
+          [width]="150"
+          [sortable]="false"
+        >
+          <ng-template let-row="row" let-i="rowIndex" ngx-datatable-cell-template>
+            <div ngbDropdown container="body" class="d-inline-block">
+              <button
+                class="btn btn-primary btn-sm dropdown-toggle"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                ngbDropdownToggle
+              >
+                <i class="fa fa-cog mr-1" aria-hidden="true"></i>
+                {{ 'AbpUi::Actions' | abpLocalization }}
+              </button>
+
+              <div ngbDropdownMenu>
+                <button
+                  ngbDropdownItem
+                  *abpPermission="'Demo.Attachments.Edit'"
+                  (click)="update(row)"
+                >
+                  {{ 'AbpUi::Edit' | abpLocalization }}
+                </button>
+
+                <button
+                  ngbDropdownItem
+                  *abpPermission="'Demo.Attachments.Delete'"
+                  (click)="delete(row)"
+                >
+                  {{ 'AbpUi::Delete' | abpLocalization }}
+                </button>
+              </div>
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column name="{{ '::FilesCount' | abpLocalization }}" prop="filesCount">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.filesCount }}
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column name="{{ '::FilesSize' | abpLocalization }}" prop="filesSize">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.filesSize }}
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column name="{{ '::Name' | abpLocalization }}" prop="name">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.name }}
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+  </div>
+</abp-page>
+
+<abp-modal [busy]="isModalBusy" [(visible)]="isModalOpen">
+  <ng-template #abpHeader>
+    <h3>
+      {{ (selected ? 'AbpUi::Edit' : '::NewAttachment') | abpLocalization }}
+    </h3>
+  </ng-template>
+
+  <ng-template #abpBody>
+    <form [formGroup]="form" (ngSubmit)="submitForm()" validateOnSubmit>
+      <div class="mt-2 fade-in-top">
+        <!-- <div class="form-group">
+          <label for="attachment-files-count">
+            {{ '::FilesCount' | abpLocalization }} *
+          </label>
+
+          <input
+            type="number"
+            id="attachment-files-count"
+            formControlName="filesCount"
+            class="form-control"
+            autofocus
+          />
+        </div>
+        <div class="form-group">
+          <label for="attachment-files-size">
+            {{ '::FilesSize' | abpLocalization }} *
+          </label>
+
+          <input
+            type="number"
+            id="attachment-files-size"
+            formControlName="filesSize"
+            class="form-control"
+          />
+        </div> -->
+        <!-- <div class="form-group">
+          <label for="attachment-name">
+            {{ '::Name' | abpLocalization }}
+          </label>
+
+          <input
+            id="attachment-name"
+            formControlName="name"
+            class="form-control"
+          />
+
+
+        </div> -->
+        <div class="form-group">
+          <label for="attachment-name">
+            {{ '::Name' | abpLocalization }} *****
+          </label>
+
+
+          <app-attachment-control formControlName="nameat" AttachmentName='Books'></app-attachment-control>
+
+        </div>
+      </div>
+    </form>
+  </ng-template>
+
+  <ng-template #abpFooter>
+    <button type="button" class="btn btn-secondary" abpClose>
+      {{ 'AbpUi::Cancel' | abpLocalization }}
+    </button>
+
+    <abp-button iconClass="fa fa-check" (click)="submitForm()" [disabled]="form?.invalid">
+      {{ 'AbpUi::Save' | abpLocalization }}
+    </abp-button>
+  </ng-template>
+</abp-modal>

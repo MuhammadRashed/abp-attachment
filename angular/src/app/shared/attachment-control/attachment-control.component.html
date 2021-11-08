@@ -1,0 +1,118 @@
+
+<input
+    hidden
+    #file
+    type="file"
+    (change)="onFileChange($event)"
+    [accept]="Accept"
+    multiple="true"
+  />
+  <button class="btn btn-primary" (click)="upload($event, file)">
+    {{ '::File' | abpLocalization }}
+  </button>
+<!--
+<table class="table">
+  <tr *ngFor="let row of data.items">
+    <td>
+      <div ngbDropdown container="body" class="d-inline-block">
+        <button
+          class="btn btn-primary btn-sm dropdown-toggle"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          ngbDropdownToggle
+        >
+          <i class="fa fa-cog mr-1" aria-hidden="true"></i>
+          {{ 'AbpUi::Actions' | abpLocalization }}
+        </button>
+
+        <div ngbDropdownMenu>
+          <button
+            ngbDropdownItem
+            *abpPermission="'Demo.AttachmentDetails.Delete'"
+            (click)="delete(row)"
+          >
+            {{ 'AbpUi::Delete' | abpLocalization }}
+          </button>
+        </div>
+      </div>
+    </td>
+    <td>
+      {{row.attachmentDetail.name}}
+    </td>
+
+  </tr>
+</table> -->
+
+  <ngx-datatable [rows]="data.items" [count]="data.totalCount" default [limit]='10'
+
+  >
+      <ngx-datatable-column
+      [name]="'AbpUi::Actions' | abpLocalization"
+      [maxWidth]="150"
+      [width]="150"
+      [sortable]="false"
+    >
+    <ng-template let-row="row" let-i="rowIndex" ngx-datatable-cell-template>
+        <div ngbDropdown container="body" class="d-inline-block">
+          <button
+            (click)='stopDefault($event)'
+            class="btn btn-primary btn-sm dropdown-toggle"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            ngbDropdownToggle
+          >
+            <i class="fa fa-cog mr-1" aria-hidden="true"></i>
+            {{ 'AbpUi::Actions' | abpLocalization }}
+          </button>
+
+          <div ngbDropdownMenu>
+            <button
+            ngbDropdownItem
+            (click)="download($event , row)"
+          >
+            {{ 'AbpUi::Download' | abpLocalization }}
+          </button>
+            <button
+              ngbDropdownItem
+              *abpPermission="'Demo.AttachmentDetails.Edit'"
+              (click)="update($event , row)"
+            >
+              {{ 'AbpUi::Edit' | abpLocalization }}
+            </button>
+
+            <button
+              ngbDropdownItem
+              *abpPermission="'Demo.AttachmentDetails.Delete'"
+              (click)="delete($event, row)"
+            >
+              {{ 'AbpUi::Delete' | abpLocalization }}
+            </button>
+          </div>
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="{{ '::Name' | abpLocalization }}" prop="attachmentDetail.name">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{ row.attachmentDetail.name }}
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="{{ '::FileSize' | abpLocalization }}" prop="attachmentDetail.fileSize">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{ row.attachmentDetail.fileSize }}
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="{{ '::Extension' | abpLocalization }}" prop="attachmentDetail.extension">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{ row.attachmentDetail.extension }}
+      </ng-template>
+    </ngx-datatable-column>
+
+    <!-- <ngx-datatable-column name="{{ '::Attachment' | abpLocalization }}" prop="attachment.name">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{ row.attachmentId }}
+      </ng-template>
+    </ngx-datatable-column> -->
+  </ngx-datatable>
